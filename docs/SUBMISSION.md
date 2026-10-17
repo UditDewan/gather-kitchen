@@ -1,7 +1,7 @@
 # Gather: submission draft
 
-**Track:** Alexa+, simulated-experience path with a working MCP server  
-**Mini challenges:** None claimed  
+**Track:** Alexa+, simulated-experience path with a working MCP server
+**Mini challenges:** None claimed
 **Tagline:** A little less food waste. A lot less "what's for dinner?"
 
 ## What it does
@@ -34,7 +34,7 @@ Gather was created for this hackathon during the submission window. The work inc
 
 ## Submission links
 
-- **Private repository:** PENDING. Intended location: `UditDewan/gather-kitchen`. Replace with the verified repository URL after creation.
+- **Private repository:** [UditDewan/gather-kitchen](https://github.com/UditDewan/gather-kitchen). Created, pushed, and verified PRIVATE on October 17, 2026.
 - **Public demo video:** PENDING. Record the [demo script](DEMO-SCRIPT.md), upload to YouTube or Vimeo, and insert its public URL.
 - **Product feedback:** [FEEDBACK.md](FEEDBACK.md).
 - **Run instructions:** [README.md](../README.md).
@@ -45,8 +45,8 @@ Gather was created for this hackathon during the submission window. The work inc
 Deadline: **October 23, 2026 at 3:00 p.m. EDT**.
 
 - [ ] Confirm individual eligibility and join the hackathon using the entrant's account.
-- [ ] Verify the private GitHub repository URL, committed source, lockfile, assets, license, and setup instructions.
-- [ ] Run `npm ci`, `npm test`, `npm run check`, and the complete browser demo from the submitted revision. Record the actual results.
+- [x] Verify the private GitHub repository URL, committed source, lockfile, assets, license, and setup instructions.
+- [x] Run `npm ci`, `npm test`, `npm run check`, and the core browser demo. Results: 20 tests passed; see [VALIDATION.md](VALIDATION.md). Repeat if the source changes before submission.
 - [ ] Record and publish an English demo shorter than three minutes on YouTube or Vimeo. Show the working simulation and clearly label its scope. Use original or licensed audiovisual material.
 - [ ] At submission time, share the private repository with the reviewers required by the current rules: `chris-trag`, `knmeiss`, `giolaq`, `anishamalde`, `mosesroth`, and `emersonsklar`; satisfy the separate `testing@devpost.com` access requirement. Verify access and invitation status. Invitations expire after seven days.
 - [ ] Paste the project description, tool feedback, primary track, verified repository URL, and video URL into Devpost.

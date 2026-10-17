@@ -39,6 +39,10 @@ The documented two-to-four-serving plan, shopping list, and cooking sequence was
 - Public hosting, remote authentication, other browser engines, or physical phones.
 - Recording or uploading the demo video.
 - Devpost submission or reviewer invitations.
-- GitHub publication or reviewer access; the repository URL remains pending verification in [SUBMISSION.md](SUBMISSION.md).
+- Reviewer access to the private repository.
 
 The supported runtime is declared as Node 22 or later, but the checks recorded here ran on Node 24.16. No broader runtime compatibility claim is implied.
+
+## Repository publication
+
+On October 17, 2026, the source was committed and pushed to [UditDewan/gather-kitchen](https://github.com/UditDewan/gather-kitchen). GitHub reported `PRIVATE` visibility, and the remote main-branch commit matched the local commit. Reviewer invitations and access have not been configured.

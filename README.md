@@ -82,7 +82,7 @@ The conversation parser understands a limited set of commands. This is a working
 
 Local validation on Windows with Node 24.16 passed `npm ci`, all **20 tests** (6 browser-state, 9 domain, 5 protocol), and `npm run check`. Desktop and mobile layouts and the core meal-planning workflow were inspected in the in-app browser. See the validation record for the scope of those checks.
 
-The intended repository is private. Repository publication, reviewer invitations, video upload, and Devpost submission are separate from running this project. No mini-challenge eligibility is assumed.
+The [source repository](https://github.com/UditDewan/gather-kitchen) is private, verified October 17, 2026. Reviewer invitations, video upload, and Devpost submission remain separate from running this project. No mini-challenge eligibility is assumed.
 
 ## License and sources
 

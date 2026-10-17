@@ -1,6 +1,6 @@
 # Gather demo script
 
-**Target length:** about 2 minutes 30 seconds. Keep the final recording under 3 minutes.  
+**Target length:** about 2 minutes 30 seconds. Keep the final recording under 3 minutes.
 **Format:** screen recording with English narration. Type the commands so the demonstration does not depend on microphone support.
 
 ## Before recording
