@@ -1,0 +1,18 @@
+{
+  "name": "gather-mcp-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A pantry-first dinner companion and Alexa+ experience simulator, powered by real MCP tools.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "dev": "node --watch src/server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/server.mjs && node --check src/mcp.mjs && node --check public/app.mjs && node --check public/domain.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "zod": "3.25.76"
+  }
+}
