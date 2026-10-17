@@ -6,6 +6,8 @@ Gather turns the ingredients already at home into a dinner plan, scaled cooking 
 
 The browser experience simulates a conversational kitchen assistant. It is not connected to an Alexa device or the Alexa+ service. Its MCP server is real: the browser calls three tools through MCP JSON-RPC over Streamable HTTP, using protocol version `2025-11-25`.
 
+For a thorough walkthrough of the features, recommendation algorithm, architecture, tool contracts, and limitations, read [Gather: a complete guide to the app](docs/APP-EXPLAINED.md).
+
 ## Run locally
 
 Install Node.js **22 or newer**, then run these commands from the project directory:
