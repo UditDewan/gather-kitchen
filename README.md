@@ -8,6 +8,8 @@ The browser experience simulates a conversational kitchen assistant. It is not c
 
 For a thorough walkthrough of the features, recommendation algorithm, architecture, tool contracts, and limitations, read [Gather: a complete guide to the app](docs/APP-EXPLAINED.md).
 
+The interface was redesigned with [Crouton](https://crouton.app/) as a visual reference: a light recipe-first layout, original food images, blue controls, and clear ingredient lists. Read the [design notes](DESIGN.md) and [image source record](docs/IMAGE-CREDITS.md).
+
 ## Run locally
 
 Install Node.js **22 or newer**, then run these commands from the project directory:
@@ -82,7 +84,7 @@ The conversation parser understands a limited set of commands. This is a working
 - [Product feedback](docs/FEEDBACK.md)
 - [Validation results and untested areas](docs/VALIDATION.md)
 
-Local validation on Windows with Node 24.16 passed `npm ci`, all **20 tests** (6 browser-state, 9 domain, 5 protocol), and `npm run check`. Desktop and mobile layouts and the core meal-planning workflow were inspected in the in-app browser. See the validation record for the scope of those checks.
+Local validation on Windows with Node 24.16 passed `npm ci`, all **23 tests** (8 browser-state, 9 domain, 6 protocol), and `npm run check`. Desktop and mobile layouts and the core meal-planning workflow were inspected in the in-app browser. See the validation record for the scope of those checks.
 
 The [source repository](https://github.com/UditDewan/gather-kitchen) is private, verified October 17, 2026. Reviewer invitations, video upload, and Devpost submission remain separate from running this project. No mini-challenge eligibility is assumed.
 

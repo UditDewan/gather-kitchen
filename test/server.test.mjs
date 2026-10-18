@@ -4,7 +4,7 @@ import http from 'node:http';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { createApp } from '../src/server.mjs';
-import { defaultPantry } from '../public/domain.mjs';
+import { defaultPantry, recipes } from '../public/domain.mjs';
 
 let app;
 let base;
@@ -73,4 +73,15 @@ test('rejects a hostile Host header before serving content', async () => {
     }).on('error', reject);
   });
   assert.equal(status, 403);
+});
+
+test('serves an image for every recipe without exposing arbitrary image paths', async () => {
+  for (const recipe of recipes) {
+    const response = await fetch(`${base}/images/${recipe.id}.png`);
+    assert.equal(response.status, 200, recipe.id);
+    assert.equal(response.headers.get('content-type'), 'image/png');
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    assert.deepEqual([...bytes.slice(0,8)], [137,80,78,71,13,10,26,10]);
+  }
+  assert.equal((await fetch(`${base}/images/unknown.png`)).status, 404);
 });

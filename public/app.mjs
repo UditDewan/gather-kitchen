@@ -74,10 +74,16 @@ function renderPlans() {
     $('#recommendation').innerHTML = '<div class="empty-state"><p class="eyebrow">A LITTLE MORE ROOM TO COOK</p><h2>No recipes fit just yet.</h2><p>Try more time, fewer exclusions, or a different dietary preference. Gather has six recipes to work with.</p><button class="primary-button" id="relax-preferences">Reset preferences</button></div>';
     $('#recipe-options').innerHTML = ''; $('#option-count').textContent = ''; return;
   }
-  $('#recommendation').innerHTML = `<article class="featured-recipe"><div class="featured-copy"><span class="pick-label">${icon('spark')} TONIGHT'S PICK</span><h2>${escape(recipe.title)}</h2><p>${escape(recipe.description)}</p>${recipeMeta(recipe)}<button class="primary-button" data-recipe="${escape(recipe.id)}">Make this tonight ${icon('arrow')}</button></div><div class="featured-art"><span class="freshness-label">${icon('leaf')}${recipe.useSoonIngredients.length ? 'A little less food waste' : 'Good things, simply made'}</span><img src="/bowl.svg" alt="Original illustration of a bowl with golden chickpeas, rice, leafy greens, and lemon"><span class="match-label">${recipe.coverage}% already in your pantry <span>✓</span></span></div></article>`;
+  $('#recommendation').innerHTML = `<article class="featured-recipe">
+    <div class="featured-photo"><img src="/images/${escape(recipe.id)}.png" alt="${escape(recipe.title)}" width="1254" height="1254" fetchpriority="high"><span class="pick-label">${icon('spark')} Tonight's pick</span><span class="pantry-badge">${icon('check')}${recipe.coverage}% in your pantry</span></div>
+    <div class="featured-copy"><h2>${escape(recipe.title)}</h2>${recipeMeta(recipe)}<p class="recipe-description">${escape(recipe.description)}</p><p class="recipe-reason">${icon('leaf')}${recipe.useSoonIngredients.length ? `Uses your ${escape(recipe.useSoonIngredients.join(', '))}.` : 'A good fit for your time and preferences.'}</p><p class="missing-count">${recipe.missingIngredients.length ? `${recipe.missingIngredients.length} ingredient${recipe.missingIngredients.length === 1 ? '' : 's'} missing` : 'All ingredients matched. Check your quantities.'}</p><div class="recipe-actions"><button type="button" class="primary-button" data-cook="${escape(recipe.id)}">Cook this ${icon('arrow')}</button><button type="button" class="secondary-button" data-recipe="${escape(recipe.id)}">View recipe</button></div></div>
+  </article>`;
   const alternatives = plans.slice(1,4);
   $('#option-count').textContent = `${alternatives.length} more idea${alternatives.length === 1 ? '' : 's'}`;
-  $('#recipe-options').innerHTML = alternatives.length ? alternatives.map((item,index) => `<button type="button" class="mini-recipe" data-recipe="${escape(item.id)}" aria-label="View ${escape(item.title)}"><div class="mini-art" style="--recipe-color:${['#e9d6c1','#e2e5cc','#e1dcc7'][index]}"><img src="/bowl.svg" alt="" style="filter:hue-rotate(${index * 19}deg);transform:rotate(${index * 23-15}deg)"><span class="mini-time">${item.minutes} min</span></div><div class="mini-copy"><h3>${escape(item.title)}</h3><div class="mini-bottom"><span class="coverage">${icon('leaf')}${item.coverage}% in your pantry</span>${icon('arrow')}</div></div></button>`).join('') : '<p class="no-alternatives">This is the only recipe that fits. Change your preferences above to see more ideas.</p>';
+  $('#recipe-options').innerHTML = alternatives.length ? alternatives.map(item => `<article class="recipe-card">
+    <button type="button" class="recipe-photo" data-recipe="${escape(item.id)}" aria-label="View ${escape(item.title)}"><img src="/images/${escape(item.id)}.png" alt="" width="1254" height="1254" loading="lazy"></button>
+    <div class="card-body"><h3>${escape(item.title)}</h3>${recipeMeta(item)}<div class="card-summary"><span class="pantry-badge">${icon('leaf')}${item.coverage}% in pantry</span><span class="missing-count">${item.missingIngredients.length ? `${item.missingIngredients.length} missing` : 'All matched'}</span></div><div class="recipe-actions"><button type="button" class="secondary-button" data-recipe="${escape(item.id)}">View recipe</button><button type="button" class="primary-button" data-cook="${escape(item.id)}">Cook ${icon('arrow')}</button></div></div>
+  </article>`).join('') : '<p class="no-alternatives">This is the only recipe that fits. Change your preferences above to see more ideas.</p>';
 }
 async function planDinner(announce = false) {
   const version = ++planVersion, args = structuredClone({...state.preferences,...pantryArgs()});
@@ -92,7 +98,7 @@ async function planDinner(announce = false) {
     status(plans.length ? `${plans.length} recipes fit your evening. Pantry matches check ingredient presence.` : 'No recipes match these preferences.');
     if (announce) addMessage(plans.length ? `I'd make ${plans[0].title.toLowerCase()}. It takes ${plans[0].minutes} minutes, serves ${plans[0].servings}, and you have ${plans[0].coverage}% of its ingredients. ${plans[0].useSoonIngredients.length ? `It also uses your ${plans[0].useSoonIngredients.join(' and ')}.` : ''}` : 'None of the six recipes fits these preferences. Try more time or clear an exclusion.');
     return true;
-  } catch (error) { if (version !== planVersion) return false; status(error.message,true); if (announce) addMessage(error.message); if (!plans.length) $('#recommendation').innerHTML = '<div class="empty-state"><h2>The kitchen is offline.</h2><p>Start the Gather server and use the arrow in the preference bar to try again. No recipe result has been invented.</p></div>'; return false; }
+  } catch (error) { if (version !== planVersion) return false; status(error.message,true); if (announce) addMessage(error.message); if (!plans.length) $('#recommendation').innerHTML = '<div class="empty-state"><h2>The kitchen is offline.</h2><p>Start the Gather server and choose Find dinner to try again. No recipe result has been invented.</p></div>'; return false; }
   finally { if (version === planVersion) $('#plan-form button').disabled = false; }
 }
 function showView() {
@@ -109,7 +115,7 @@ function renderPantry() {
 }
 function openIngredient(index = null) {
   ingredientIndex = index; const item = index === null ? {name:'',quantity:1,unit:'piece',daysLeft:7} : state.pantry[index];
-  $('#ingredient-dialog-title').textContent = index === null ? 'Add to your pantry.' : 'A little pantry update.';
+  $('#ingredient-dialog-title').textContent = index === null ? 'Add ingredient' : 'Edit ingredient';
   for (const [id,value] of [['name',item.name],['quantity',item.quantity],['unit',item.unit],['days',item.daysLeft]]) $(`#ingredient-${id}`).value = value;
   $('#ingredient-error').textContent = ''; $('#ingredient-dialog').showModal(); $('#ingredient-name').focus();
 }
@@ -129,7 +135,7 @@ async function openRecipe(id) {
 }
 function renderRecipe() {
   const recipe = selectedRecipe;
-  $('#recipe-dialog-content').innerHTML = `<p class="eyebrow">GOOD FOOD, ONE STEP AT A TIME</p><h2 id="recipe-dialog-title" class="dialog-title">${escape(recipe.title)}</h2><p class="dialog-description">${escape(recipe.description)}</p>${recipeMeta(recipe)}<div class="recipe-dialog-grid"><div><h3>The good stuff</h3><ul class="ingredient-list">${recipe.ingredients.map(item => `<li><span>${escape(item.name)}</span><small>${item.quantity} ${escape(item.unit)}</small></li>`).join('')}</ul></div><div><h3>Bring it together</h3><ol class="recipe-steps">${recipe.steps.map(step => `<li><strong>${escape(step.title)} · ${step.minutes} min</strong>${escape(step.instruction)}</li>`).join('')}</ol></div></div><div class="recipe-dialog-actions"><button class="primary-button" id="start-cooking">Start cooking ${icon('arrow')}</button><button class="secondary-button" id="recipe-shopping">Make shopping list ${icon('list')}</button></div>`;
+  $('#recipe-dialog-content').innerHTML = `<div class="recipe-dialog-hero"><img src="/images/${escape(recipe.id)}.png" alt="${escape(recipe.title)}" width="1254" height="1254"></div><div class="recipe-dialog-intro"><h2 id="recipe-dialog-title" class="dialog-title">${escape(recipe.title)}</h2>${recipeMeta(recipe)}<p class="dialog-description">${escape(recipe.description)}</p></div><div class="recipe-dialog-grid"><section><h3>Ingredients</h3><ul class="ingredient-list">${recipe.ingredients.map(item => `<li><span>${escape(item.name)}</span><small>${item.quantity} ${escape(item.unit)}</small></li>`).join('')}</ul></section><section><h3>Method</h3><ol class="recipe-steps">${recipe.steps.map(step => `<li><strong>${escape(step.title)} · ${step.minutes} min</strong>${escape(step.instruction)}</li>`).join('')}</ol></section></div><div class="recipe-dialog-actions"><button class="primary-button" id="start-cooking">Start cooking ${icon('arrow')}</button><button class="secondary-button" id="recipe-shopping">Make shopping list ${icon('list')}</button></div>`;
 }
 function stopTimer() { clearInterval(timerInterval); timerInterval = null; timerEnd = null; timerRemaining = 0; }
 function timerLabel(seconds) { return `${Math.floor(seconds / 60).toString().padStart(2,'0')}:${(seconds % 60).toString().padStart(2,'0')}`; }
@@ -202,9 +208,10 @@ $('#close-recipe').addEventListener('click',()=>$('#recipe-dialog').close());
 $('#recipe-dialog').addEventListener('close',()=>{ stopTimer(); cookingStep = null; });
 $('#plan-from-pantry').addEventListener('click',()=>{ location.hash = 'tonight'; planDinner(true); });
 $('#reset-demo').addEventListener('click',()=>{ if(!confirm('Reset your pantry, preferences, shopping list, and conversation to the demo? This removes your saved Gather changes.')) return; resetVersion++; state = freshState(); selectedRecipe = null; plans = []; cookingStep = null; traces = []; requestId = 0; stopTimer(); $('#recipe-dialog').close(); $('#ingredient-dialog').close(); $('#conversation').innerHTML = initialConversation; $('#command').value = ''; renderTraces(); save(); preferencesToForm(); renderPantry(); renderShopping(); location.hash = 'tonight'; planDinner(); toast('Demo restored.'); });
-document.addEventListener('click',event => {
+document.addEventListener('click',async event => {
   const button = event.target.closest('button'); if (!button) return;
   if(button.dataset.recipe) openRecipe(button.dataset.recipe);
+  else if(button.dataset.cook) { if(await openRecipe(button.dataset.cook)) { cookingStep = 0; renderCooking(); } }
   else if(button.dataset.prompt) command(button.dataset.prompt);
   else if(button.dataset.edit !== undefined) openIngredient(Number(button.dataset.edit));
   else if(button.dataset.remove !== undefined) { state.pantry.splice(Number(button.dataset.remove),1); save(); renderPantry(); toast('Ingredient removed. Plan dinner to refresh matches.'); }
@@ -221,7 +228,14 @@ document.addEventListener('click',event => {
   else if(button.id === 'refresh-shopping') makeShopping(state.shopping.recipeId);
   else if(button.id === 'export-shopping') exportShopping();
 });
-document.addEventListener('change',event => { if(event.target.dataset.check) { const name = event.target.dataset.check; state.checked = state.checked.filter(item=>item !== name); if(event.target.checked) state.checked.push(name); save(); renderShopping(); } });
+document.addEventListener('change',event => {
+  if (!event.target.dataset.check) return;
+  const name = event.target.dataset.check;
+  state.checked = state.checked.filter(item=>item !== name);
+  if (event.target.checked) state.checked.push(name);
+  save(); renderShopping();
+  [...document.querySelectorAll('.shopping-item input')].find(input => input.dataset.check === name)?.focus();
+});
 $('#speak-replies').addEventListener('change',()=>{ if(!$('#speak-replies').checked && 'speechSynthesis' in window) speechSynthesis.cancel(); });
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (Recognition) {

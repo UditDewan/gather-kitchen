@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#21382e">
+  <meta name="theme-color" content="#f4f5f7">
   <meta name="description" content="Meet Gather. A conversational dinner planner that starts with what's already in your kitchen. An Alexa+ experience simulator powered by real MCP tools.">
-  <title>Gather — A little less planning. A lot more dinner.</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2321382e'/%3E%3Cpath d='M10 20a10 10 0 0 0 20 0Z' fill='%23efd7aa'/%3E%3Cpath d='M20 16c-5-2-5-6-4-8 5 1 7 4 4 8m2 0c0-5 3-7 7-7-1 5-3 7-7 7' fill='%23c2cd87'/%3E%3C/svg%3E">
+  <title>Gather — Your everyday kitchen</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%230967ad'/%3E%3Cpath d='M10 20a10 10 0 0 0 20 0Z' fill='%23ffffff'/%3E%3Cpath d='M20 16c-5-2-5-6-4-8 5 1 7 4 4 8m2 0c0-5 3-7 7-7-1 5-3 7-7 7' fill='%23ffffff'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="/style.css">
   <script type="module" src="/app.mjs"></script>
 </head>
@@ -30,7 +30,7 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Main navigation">
-      <a href="#tonight" class="brand" aria-label="Gather, tonight"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 22a14 14 0 0 0 28 0Z" fill="currentColor"/><path d="M19 17c-7-2-7-8-6-11 6 1 9 6 6 11m3 0c0-7 5-10 11-9-1 6-5 9-11 9" fill="currentColor"/></svg><span>gather<span class="brand-dot">.</span></span></a>
+      <a href="#tonight" class="brand" aria-label="Gather, tonight"><span class="brand-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 22a14 14 0 0 0 28 0Z" fill="currentColor"/><path d="M19 17c-7-2-7-8-6-11 6 1 9 6 6 11m3 0c0-7 5-10 11-9-1 6-5 9-11 9" fill="currentColor"/></svg></span><span>Gather</span></a>
 
       <nav class="nav-links">
         <a class="nav-link active" href="#tonight" data-view="tonight"><svg class="icon"><use href="#i-home"/></svg><span>Tonight</span><span class="nav-dot"></span></a>
@@ -39,55 +39,52 @@
         <a class="nav-link" href="#about" data-view="about"><svg class="icon"><use href="#i-info"/></svg><span>About Gather</span></a>
       </nav>
       <div class="sidebar-bottom">
-        <div class="small-leaf"><svg class="icon"><use href="#i-leaf"/></svg></div>
-        <p>A good dinner starts<br>with what you have.</p>
-        <div class="sidebar-rule"></div>
-        <span class="simulator-badge"><span></span> Alexa+ experience simulator</span>
+        <div class="sidebar-note"><svg class="icon"><use href="#i-leaf"/></svg><p>Start with your pantry.<br>Make more of what you have.</p></div>
+        <span class="simulator-badge"><span></span> Alexa+ simulator</span>
         <button class="text-button reset-demo" id="reset-demo">Reset demo</button>
       </div>
     </aside>
     <div class="workspace">
-      <header class="topbar"><span class="topbar-title">YOUR EVERYDAY KITCHEN COMPANION</span><span class="local-label"><span></span> Your kitchen, saved locally</span></header>
+      <header class="topbar"><span class="topbar-title">My kitchen</span><span class="local-label"><svg class="icon"><use href="#i-check"/></svg> Saved on this device</span></header>
       <div class="workspace-columns">
         <main id="main" tabindex="-1">
           <section class="view" id="view-tonight" aria-labelledby="tonight-heading">
-            <div class="page-intro"><h1 id="tonight-heading">A little less planning.<br><em>A lot more dinner.</em></h1><p class="intro-copy">What's in your kitchen is a pretty good place to start.</p></div>
+            <div class="page-intro"><h1 id="tonight-heading">Tonight</h1><p class="intro-copy">A few good ideas from what's already in your kitchen.</p></div>
             <form id="plan-form" class="plan-controls" aria-label="Dinner preferences">
-              <label><svg class="icon"><use href="#i-clock"/></svg><span class="control-label">I have</span><select id="max-minutes" aria-label="Maximum cooking time"><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30" selected>30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option></select></label>
+              <label><svg class="icon"><use href="#i-clock"/></svg><select id="max-minutes" aria-label="Maximum cooking time"><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30" selected>30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option></select></label>
               <label><svg class="icon"><use href="#i-people"/></svg><select id="servings" aria-label="Number of servings"><option value="1">Just me</option><option value="2" selected>2 people</option><option value="3">3 people</option><option value="4">4 people</option><option value="6">6 people</option><option value="8">8 people</option></select></label>
               <label><svg class="icon"><use href="#i-leaf"/></svg><select id="diet" aria-label="Dietary preference"><option value="any">Anything goes</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option></select></label>
-              <button class="plan-submit" type="submit" title="Find dinner" aria-label="Find dinner"><svg class="icon"><use href="#i-arrow"/></svg></button>
+              <button class="plan-submit" type="submit" title="Find dinner" aria-label="Find dinner"><span>Find dinner</span><svg class="icon"><use href="#i-arrow"/></svg></button>
             </form>
             <div id="avoid-summary" class="avoid-summary" hidden></div>
             <div id="plan-status" class="status-line" role="status" aria-live="polite"></div>
-            <div id="recommendation" class="recommendation"><div class="loading-card"><span class="eyebrow">YOUR DINNER, COMING TOGETHER</span><h2>Checking your pantry…</h2><p>Gather is asking the dinner-planning tool for ideas.</p></div></div>
-            <div class="section-heading"><div><h2>Or, go a different way.</h2></div><span id="option-count" class="muted"></span></div>
+            <div id="recommendation" class="recommendation"><div class="loading-card"><h2>Checking your pantry…</h2><p>Finding recipes for your evening.</p></div></div>
+            <div class="section-heading"><div><h2>More for your table</h2></div><span id="option-count" class="muted"></span></div>
             <div id="recipe-options" class="recipe-grid"></div>
-            <div class="pantry-nudge"><div class="nudge-icon"><svg class="icon"><use href="#i-leaf"/></svg></div><div><strong>A little love for your pantry.</strong><p id="pantry-nudge-copy">Use what you have. Make something you'll love.</p></div><a href="#pantry" class="text-link">Take a look <span aria-hidden="true">↗</span></a></div>
+            <div class="pantry-nudge"><div class="nudge-icon"><svg class="icon"><use href="#i-leaf"/></svg></div><div><strong>Use these first</strong><p id="pantry-nudge-copy">See what needs using in your pantry.</p></div><a href="#pantry" class="text-link">View pantry <svg class="icon"><use href="#i-arrow"/></svg></a></div>
           </section>
           <section class="view" id="view-pantry" aria-labelledby="pantry-heading" hidden>
-            <div class="page-intro"><h1 id="pantry-heading">Good things.<br><em>Already in the kitchen.</em></h1><p class="intro-copy">Keep your pantry up to date. We'll put the good stuff to work.</p></div>
-            <div class="section-heading"><h2>My pantry <span id="pantry-total" class="count-pill"></span></h2><button class="primary-button" id="add-ingredient"><svg class="icon"><use href="#i-plus"/></svg> Add ingredient</button></div>
+            <div class="page-intro"><h1 id="pantry-heading">My pantry</h1><p class="intro-copy">What you have, and what to use next.</p></div>
+            <div class="section-heading"><h2>All ingredients <span id="pantry-total" class="count-pill"></span></h2><button class="primary-button" id="add-ingredient"><svg class="icon"><use href="#i-plus"/></svg> Add ingredient</button></div>
             <p class="helper-copy">The starter pantry is demo data. “Use within” is your own freshness estimate, not a food-safety recommendation.</p>
             <div id="pantry-items" class="pantry-items"></div>
             <div class="pantry-footer"><p>Planning matches ingredients by presence, not quantity. Check what you have before cooking.</p><button class="primary-button" id="plan-from-pantry">Find dinner <svg class="icon"><use href="#i-arrow"/></svg></button></div>
           </section>
           <section class="view" id="view-shopping" aria-labelledby="shopping-heading" hidden>
-            <div class="page-intro"><h1 id="shopping-heading">A shorter list.<br><em>A better dinner.</em></h1><p class="intro-copy">The ingredients you need, with the pantry pieces already covered.</p></div>
+            <div class="page-intro"><h1 id="shopping-heading">Shopping list</h1><p class="intro-copy">Just the ingredients missing from your pantry.</p></div>
             <div id="shopping-content"></div>
           </section>
           <section class="view" id="view-about" aria-labelledby="about-heading" hidden>
-            <div class="page-intro"><h1 id="about-heading">Dinner starts<br><em>with a conversation.</em></h1><p class="intro-copy">Gather is a working prototype for a more useful, less wasteful everyday kitchen.</p></div>
+            <div class="page-intro"><h1 id="about-heading">About Gather</h1><p class="intro-copy">A small, practical kitchen companion.</p></div>
             <article class="about-card"><span class="simulator-badge"><span></span> Alexa+ experience simulator</span><h2>“What can I make with what I've got?”</h2><p>Gather turns your pantry, available time, and preferences into a dinner plan. Walk through a recipe, use a cooking timer, and take only the missing ingredients to the store.</p><div class="about-flow"><span>Tell Gather</span><span aria-hidden="true">→</span><span>Call MCP tools</span><span aria-hidden="true">→</span><span>Make dinner</span></div></article>
             <div class="about-grid"><article><h3>Real tools. Visible decisions.</h3><p>The planner, recipe lookup, and shopping list call the local MCP server. Open the tool activity below the conversation to inspect requests and responses.</p></article><article><h3>A deliberately small kitchen.</h3><p>Six curated recipes and a deterministic command parser power this demo. It doesn't call a language model. Ingredient matches check presence, not available quantities. No nutrition or allergen-safety guarantees.</p></article><article><h3>Your browser is your pantry.</h3><p>Pantry entries, preferences, and shopping checks stay in local storage on this device. Planning sends ingredient names and preferences to the server running this app. Reset demo clears Gather's saved state.</p></article><article><h3>Made for an Alexa+ future.</h3><p>This simulator is not connected to an Alexa device or Amazon account. A live Alexa+ integration needs separate registration, hosting, and testing. Optional browser voice features are separate from Alexa.</p></article></div>
           </section>
         </main>
         <aside class="assistant-panel" aria-labelledby="assistant-heading">
 
-          <h2 id="assistant-heading">Your kitchen,<br> <em>in conversation.</em></h2>
-          <p class="assistant-subtitle">Tell me what's on your mind.<br>We'll take dinner from there.</p>
+          <div class="assistant-title"><span class="assistant-icon"><svg class="icon"><use href="#i-spark"/></svg></span><div><h2 id="assistant-heading">Ask Gather</h2><p class="assistant-subtitle">A hand with dinner</p></div></div>
           <div class="conversation" id="conversation" role="log" aria-label="Kitchen conversation" aria-live="polite"><div class="chat-message assistant-message"><span class="message-label">GATHER</span><p>Let's make the most of what you have. Try a time, a serving count, or a dietary preference.</p></div></div>
-          <div class="quick-prompts" id="quick-prompts"><button data-prompt="Vegetarian dinner in 20 minutes for 2">“Vegetarian, 20 minutes” <span>↗</span></button><button data-prompt="Show my shopping list">“What do I need to pick up?” <span>↗</span></button></div>
+          <div class="quick-prompts" id="quick-prompts"><button data-prompt="Vegetarian dinner in 20 minutes for 2">Vegetarian in 20 minutes <svg class="icon"><use href="#i-arrow"/></svg></button><button data-prompt="Show my shopping list">Make a shopping list <svg class="icon"><use href="#i-arrow"/></svg></button></div>
           <form id="chat-form" class="chat-form"><label class="sr-only" for="command">Ask Gather</label><textarea id="command" rows="2" maxlength="300" placeholder="What's for dinner?" required></textarea><div class="chat-input-bottom"><span class="chat-input-hint">Try “vegan, under 30 minutes”</span><button type="submit" class="send-button" aria-label="Send message"><svg class="icon"><use href="#i-arrow"/></svg></button></div></form>
           <div class="voice-controls"><button class="voice-button" id="voice-input" type="button" hidden><svg class="icon"><use href="#i-mic"/></svg> Use voice</button><label class="speak-label"><input type="checkbox" id="speak-replies"> Read replies aloud</label></div>
           <p class="voice-disclosure" id="voice-disclosure" hidden>Voice uses your browser's speech provider, which may process audio remotely. Only starts when you choose Use voice.</p>
@@ -95,7 +92,7 @@
           <details class="tool-activity"><summary><span><span class="activity-dot"></span> MCP tool activity</span><span id="tool-count">0 calls</span></summary><div id="tool-traces" class="tool-traces"><p>Tool requests and responses will appear here.</p></div></details>
         </aside>
       </div>
-      <footer class="workspace-footer"><span>LESS WASTE. MORE AT THE TABLE.</span><span>Made with what's already here. <svg class="icon"><use href="#i-leaf"/></svg></span></footer>
+      <footer class="workspace-footer"><span>Good food. Less waste.</span><span>Six recipes. A kitchen full of possibilities.</span></footer>
     </div>
   </div>
   <dialog id="recipe-dialog" class="recipe-dialog" aria-labelledby="recipe-dialog-title"><button type="button" class="dialog-close icon-button" id="close-recipe" aria-label="Close recipe"><svg class="icon"><use href="#i-close"/></svg></button><div id="recipe-dialog-content"></div></dialog>

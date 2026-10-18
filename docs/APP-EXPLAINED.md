@@ -107,12 +107,13 @@ After closing the dialog, expand **MCP tool activity** to inspect the requests a
 The Tonight screen is the main decision-making view. It contains:
 
 - Controls for maximum cooking time, number of servings, and diet.
-- A submit arrow that requests a new dinner plan.
+- A **Find dinner** button that requests a new dinner plan.
 - A featured recommendation with description, time, servings, diet, and pantry coverage.
-- Up to two alternative recipe cards.
+- Up to two alternative recipe cards, each with its own food image, pantry coverage, missing-ingredient count, and **View recipe** / **Cook** actions.
+- **Cook this** starts the featured recipe at its first step. **View recipe** opens the complete ingredient list and method before cooking.
 - A pantry reminder highlighting entries marked to use soon.
 
-Changing a dropdown alone does not submit the form. Use the arrow to apply the selected values. If exclusions are active, an “Avoiding” summary provides a **Clear** button.
+Changing a dropdown alone does not submit the form. Use **Find dinner** to apply the selected values. If exclusions are active, an “Avoiding” summary provides a **Clear** button.
 
 The browser accepts whole-number time limits from **5 to 120 minutes** and serving counts from **1 to 12**. The dropdowns offer common choices; supported values entered through the conversation can be added to those controls.
 
@@ -470,11 +471,11 @@ These controls support the local demonstration. They do not make the server suit
 
 ## 11. Design and accessibility
 
-Gather uses a cream background, forest-green text and conversation panel, restrained orange accents, serif headings, and system sans-serif body text. The original bowl illustration gives the project a kitchen identity without loading remote imagery or fonts.
+The October 17 redesign takes its visual reference from the recipe-library and recipe-detail screens on [Crouton's official site](https://crouton.app/). Gather uses a pale gray background, white content surfaces, blue action controls, compact bold system typography, rounded recipe photos, and pill-shaped preference controls. The sidebar becomes a four-item navigation row on mobile. Gather keeps its own name, content, functionality, icons, and original food images; no Crouton screenshots or branding are shipped in the app.
 
-The visual hierarchy emphasizes the recommendation and next action. Alternative recipes use simpler text-led cards. Mobile preferences become a two-column control group, and the conversation moves below the main content.
+The featured recipe combines a food image with its time, servings, dietary label, pantry match, missing count, and cooking actions. Alternatives use a two-column photo grid. Recipe details open in a sheet with a photo header, ingredient quantities, numbered method steps, and cooking/shopping actions. Pantry and shopping views use grouped lists with clear secondary actions. The conversation panel is a light supporting surface beside the content on desktop and below it on smaller screens.
 
-The refinement work increased labels to at least twelve pixels, primary body copy to fourteen pixels, and text-entry controls to sixteen pixels. Main action controls have larger touch areas. Secondary text was darkened, repetitive decorative captions were removed, and motion was reduced to short interaction feedback.
+Typography follows a system font stack rather than downloading fonts. Main controls use generous touch areas; secondary metadata is intentionally smaller. Focus, selection, form caret, hover, pressed, loading, empty, and error states share the same palette. A short dialog entrance is disabled when reduced motion is requested. The six images are served from local files; they are illustrative food visuals, not measured portion or nutrition information. See [DESIGN.md](../DESIGN.md) for the visual contract and [IMAGE-CREDITS.md](IMAGE-CREDITS.md) for the image source record.
 
 Accessibility features in the implementation include a skip link, labeled inputs and icon buttons, visible keyboard focus, active-page navigation state, live status/conversation announcements, native modal dialogs, and reduced-motion support. Cooking-step changes move keyboard focus to the new heading.
 
@@ -512,7 +513,8 @@ Then open `http://127.0.0.1:4174`. A different port also creates a different bro
 | [public/style.css](../public/style.css) | Visual system, layout, responsive behavior, focus, and motion |
 | [public/app.mjs](../public/app.mjs) | Browser state, command handling, rendering, MCP client calls, and timers |
 | [public/domain.mjs](../public/domain.mjs) | Sample pantry, recipes, normalization, ranking, scaling, shopping, and parsing |
-| [public/bowl.svg](../public/bowl.svg) | Original food illustration |
+| [public/images/](../public/images/) | Six original food images used by recipe cards and details |
+| [DESIGN.md](../DESIGN.md) | Crouton-inspired visual system and responsive decisions |
 | [src/mcp.mjs](../src/mcp.mjs) | Tool names, descriptions, schemas, annotations, and handlers |
 | [src/server.mjs](../src/server.mjs) | HTTP routes, transport lifecycle, limits, and local serving |
 | [test/app.test.mjs](../test/app.test.mjs) | Browser-state regression tests using a minimal DOM harness |
@@ -544,19 +546,19 @@ npm test
 npm run check
 ```
 
-The recorded October 17 validation passed a clean dependency installation, **20 tests**, and JavaScript syntax checks on Windows with Node.js 24.16.
+The recorded October 17 validation passed a clean dependency installation, **23 tests**, and JavaScript syntax checks on Windows with Node.js 24.16.
 
 | Test group | Count | Main coverage |
 | --- | --- | --- |
-| Browser state | 6 | Malformed saved pantry/preferences, invalid commands, plaintext tool errors, request ordering, reset isolation, cooking focus |
+| Browser state | 8 | Malformed saved pantry/preferences, invalid commands, plaintext tool errors, request ordering, reset isolation, cooking focus, selected-card Cook action, shopping checkbox focus |
 | Domain | 9 | Ranking, filters, aliases, scaling, shopping, use-soon bonuses, invalid input, parser behavior, catalog completeness |
-| Server/protocol | 5 | Initialization, official-client tool calls, malformed/oversized/cross-origin requests, asset boundaries, hostile Host headers |
+| Server/protocol | 6 | Initialization, official-client tool calls, malformed/oversized/cross-origin requests, asset boundaries, hostile Host headers, all six recipe image routes |
 
 The browser-state tests execute real application logic with a small DOM substitute. They are not a substitute for a real browser or an accessibility audit.
 
 The recorded interactive walkthrough inspected desktop and mobile layouts and exercised pantry addition/removal, planning, two-to-four serving changes, the one-cup-yogurt shopping example, checkbox persistence, text export, cooking navigation, timer controls, and step-heading focus. These checks used the in-app browser, not a physical Alexa device or phone.
 
-The detailed record, including what was not checked, is in [VALIDATION.md](VALIDATION.md). This explanation is a documentation addition; it does not claim a new hardware or browser certification run.
+The detailed record, including what was not checked, is in [VALIDATION.md](VALIDATION.md). The redesign was checked at desktop and mobile sizes with recipe opening, direct cooking actions, pantry editing, shopping checkboxes, timer controls, and keyboard focus. These focused checks do not constitute hardware or accessibility certification.
 
 ## 14. Limitations and possible next steps
 

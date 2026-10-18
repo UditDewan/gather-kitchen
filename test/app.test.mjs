@@ -12,13 +12,13 @@ const planResult = request => ({ structuredContent: planDinner(request.arguments
 
 // Exercise the real app's state transitions without introducing a browser-test dependency.
 async function loadApp(saved) {
-  const elements = new Map(), storage = new Map();
+  const elements = new Map(), storage = new Map(), documentListeners = {};
   if (saved) storage.set('gather-kitchen-v1', JSON.stringify(saved));
   let focused = null;
   class Element {
     constructor(id = '') {
       this.id = id; this.html = id === '#conversation' ? '<p>Initial greeting</p>' : '';
-      this.children = []; this.listeners = {}; this.options = []; this.value = ''; this.checked = false; this.open = false;
+      this.children = []; this.listeners = {}; this.options = []; this.value = ''; this.checked = false; this.open = false; this.dataset = {};
       this.classList = { toggle() {}, add() {}, remove() {} }; this.parentElement = {};
     }
     get innerHTML() { return this.html; }
@@ -38,7 +38,7 @@ async function loadApp(saved) {
   });
   const context = vm.createContext({
     defaultPantry, parseCommand, structuredClone, performance, console, URL, Blob,
-    document: { querySelector: element, querySelectorAll: () => [], createElement: () => new Element(), addEventListener() {} },
+    document: { querySelector: element, querySelectorAll: selector => selector === '.shopping-item input' ? [...elements.values()].filter(item => item.dataset.check) : [], createElement: () => new Element(), addEventListener: (type, handler) => { documentListeners[type] = handler; } },
     window: { addEventListener() {} }, location: { hash: '' }, confirm: () => true,
     localStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
     Option: class { constructor(label, value) { this.label = label; this.value = value; } },
@@ -53,6 +53,8 @@ async function loadApp(saved) {
   await flush();
   return {
     run: code => vm.runInContext(code, context), element, focus: () => focused,
+    click: dataset => documentListeners.click({ target: { closest: () => ({ dataset }) } }),
+    change: target => documentListeners.change({ target }),
     handleTools: next => { handler = next; },
     deferTools() {
       const pending = [];
@@ -140,4 +142,27 @@ test('changing a cooking step gives its focusable heading keyboard focus', async
   app.run('cookingStep = 2; renderCooking()');
   assert.equal(app.focus(), '#recipe-dialog-title');
   assert.match(app.element('#recipe-dialog-content').innerHTML, /Dinner is served/);
+});
+
+test('recipe card Cook action starts the chosen recipe at its first step', async () => {
+  const app = await loadApp();
+  await app.click({ cook: 'tomato-toast' });
+  assert.equal(app.run('selectedRecipe.id'), 'tomato-toast');
+  assert.equal(app.run('cookingStep'), 0);
+  assert.equal(app.element('#recipe-dialog').open, true);
+  assert.equal(app.focus(), '#recipe-dialog-title');
+});
+
+test('shopping check changes retain focus on the matching replacement checkbox', async () => {
+  const app = await loadApp();
+  app.run("state.pantry = state.pantry.filter(item => item.name !== 'Greek yogurt')");
+  await app.run("makeShopping('lemon-chickpea-bowl')");
+  const replacement = app.element('replacement-checkbox');
+  replacement.dataset.check = 'Greek yogurt';
+  app.change({ dataset: { check: 'Greek yogurt' }, checked: true });
+  assert.equal(app.run("state.checked.includes('Greek yogurt')"), true);
+  assert.equal(app.focus(), 'replacement-checkbox');
+  app.change({ dataset: { check: 'Greek yogurt' }, checked: false });
+  assert.equal(app.run("state.checked.includes('Greek yogurt')"), false);
+  assert.equal(app.focus(), 'replacement-checkbox');
 });

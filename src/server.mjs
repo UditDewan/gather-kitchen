@@ -12,7 +12,13 @@ const files = new Map([
   ['/style.css', ['style.css', 'text/css; charset=utf-8']],
   ['/app.mjs', ['app.mjs', 'text/javascript; charset=utf-8']],
   ['/domain.mjs', ['domain.mjs', 'text/javascript; charset=utf-8']],
-  ['/bowl.svg', ['bowl.svg', 'image/svg+xml']]
+  ['/bowl.svg', ['bowl.svg', 'image/svg+xml']],
+  ['/images/lemon-chickpea-bowl.png', ['images/lemon-chickpea-bowl.png', 'image/png']],
+  ['/images/pantry-pasta.png', ['images/pantry-pasta.png', 'image/png']],
+  ['/images/black-bean-tacos.png', ['images/black-bean-tacos.png', 'image/png']],
+  ['/images/fried-rice.png', ['images/fried-rice.png', 'image/png']],
+  ['/images/lentil-soup.png', ['images/lentil-soup.png', 'image/png']],
+  ['/images/tomato-toast.png', ['images/tomato-toast.png', 'image/png']]
 ]);
 
 function json(res, status, value) {
