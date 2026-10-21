@@ -15,7 +15,7 @@
 
 **Say:**
 
-"This is Gather, a pantry-first dinner companion. It helps answer a small but daily question: what can I make with what I already have? This is a simulated Alexa+ experience, with a real MCP server behind the browser."
+"This is Gather, a pantry-first dinner companion. It helps answer a daily question: what can I make with what I already have? It's an Alexa+ track project with a real self-hosted MCP server and a browser simulation. It runs on my computer without Amazon hardware."
 
 ## 0:18-0:45 | Plan dinner
 

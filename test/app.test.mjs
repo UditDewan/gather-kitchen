@@ -166,3 +166,56 @@ test('shopping check changes retain focus on the matching replacement checkbox',
   assert.equal(app.run("state.checked.includes('Greek yogurt')"), false);
   assert.equal(app.focus(), 'replacement-checkbox');
 });
+
+test('saved shopping restores valid data and rejects malformed records without losing pantry state', async () => {
+  const pantry = [{ name: 'lemon', quantity: 3, unit: 'whole', daysLeft: 2 }];
+  const shopping = { ...buildShoppingList({ recipeId: 'tomato-toast', servings: 4, pantry: ['lemon'] }), recipeId: 'tomato-toast', title: 'Tomato & white bean toast', servings: 4 };
+  const valid = await loadApp({ pantry, shopping, checked: ['bread'] });
+  assert.equal(valid.run('JSON.stringify(state.shopping)'), JSON.stringify(shopping));
+  assert.equal(valid.run('JSON.stringify(state.pantry)'), JSON.stringify(pantry));
+  assert.equal(valid.run("state.checked.includes('bread')"), true);
+  for (const broken of [
+    { ...shopping, items: [null] },
+    { ...shopping, available: [{ name: 'lemon', quantity: '3', unit: 'whole' }] },
+    { ...shopping, items: [{ name: '', quantity: 1, unit: 'cup' }] },
+    { ...shopping, recipeId: null },
+    { ...shopping, servings: 0 },
+  ]) {
+    const app = await loadApp({ pantry, shopping: broken });
+    assert.equal(app.run('state.shopping'), null);
+    assert.equal(app.run('JSON.stringify(state.pantry)'), JSON.stringify(pantry));
+    assert.ok(app.run('plans.length') > 0);
+  }
+});
+
+test('latest Cook selection wins over an older recipe response or error', async () => {
+  for (const staleError of [false, true]) {
+    const app = await loadApp(), pending = app.deferTools();
+    const first = app.click({ cook: 'lemon-chickpea-bowl' });
+    await flush();
+    const second = app.click({ cook: 'tomato-toast' });
+    await flush();
+    pending[1].resolve({ structuredContent: getRecipe(pending[1].request.arguments) });
+    await second;
+    pending[0].resolve(staleError ? { isError: true, content: [{ type: 'text', text: 'Old recipe failed' }] } : { structuredContent: getRecipe(pending[0].request.arguments) });
+    await first;
+    assert.equal(app.run('selectedRecipe.id'), 'tomato-toast');
+    assert.equal(app.run('cookingStep'), 0);
+    assert.equal(app.element('#recipe-dialog').open, true);
+    assert.notEqual(app.element('#toast').textContent, 'Old recipe failed');
+  }
+});
+
+test('closing the recipe dialog prevents a pending selection from reopening it', async () => {
+  const app = await loadApp();
+  await app.run("openRecipe('lemon-chickpea-bowl')");
+  const pending = app.deferTools();
+  const next = app.run("openRecipe('tomato-toast')");
+  await flush();
+  app.element('#recipe-dialog').close();
+  pending[0].resolve({ structuredContent: getRecipe(pending[0].request.arguments) });
+  assert.equal(await next, false);
+  assert.equal(app.element('#recipe-dialog').open, false);
+  assert.equal(app.run('cookingStep'), null);
+  assert.equal(app.run('selectedRecipe.id'), 'lemon-chickpea-bowl');
+});

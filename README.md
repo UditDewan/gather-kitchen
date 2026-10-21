@@ -2,7 +2,7 @@
 
 **A pantry-first dinner companion with a conversational interface and real MCP tools.**
 
-Gather turns the ingredients already at home into a dinner plan, scaled cooking steps, and a short shopping list. It is built for the **Alexa+ simulated-experience track** of the [Build, Ship, Shape hackathon](https://amazonappdev2026.devpost.com/).
+Gather turns the ingredients already at home into a dinner plan, scaled cooking steps, and a short shopping list. It is built for the **Alexa+ track, using a self-hosted MCP server demonstrated through an Alexa-style browser simulation**, of the [Build, Ship, Shape hackathon](https://amazonappdev2026.devpost.com/).
 
 The browser experience simulates a conversational kitchen assistant. It is not connected to an Alexa device or the Alexa+ service. Its MCP server is real: the browser calls three tools through MCP JSON-RPC over Streamable HTTP, using protocol version `2025-11-25`.
 
@@ -19,7 +19,7 @@ npm ci
 npm start
 ```
 
-Open **http://127.0.0.1:4173**. Keep the terminal running. Stop with Ctrl+C. No API keys, paid services, external LLM, or cloud account are required.
+Open **http://127.0.0.1:4173**. Keep the terminal running. Stop with Ctrl+C. No Amazon devices, API keys, paid services, external LLM, or cloud account are required. The app and MCP server run on your computer.
 
 ```sh
 npm test       # Browser-state, domain, and MCP integration checks
@@ -84,9 +84,9 @@ The conversation parser understands a limited set of commands. This is a working
 - [Product feedback](docs/FEEDBACK.md)
 - [Validation results and untested areas](docs/VALIDATION.md)
 
-Local validation on Windows with Node 24.16 passed `npm ci`, all **23 tests** (8 browser-state, 9 domain, 6 protocol), and `npm run check`. Desktop and mobile layouts and the core meal-planning workflow were inspected in the in-app browser. See the validation record for the scope of those checks.
+Local validation on October 21, 2026 with Windows and Node 24.16 passed `npm ci`, all **26 tests** (11 browser-state, 9 domain, 6 protocol), and `npm run check`. Desktop and mobile layouts and the core meal-planning workflow were inspected in the in-app browser. See the validation record for the dates and scope of those checks.
 
-The [source repository](https://github.com/UditDewan/gather-kitchen) is private, verified October 17, 2026. Reviewer invitations, video upload, and Devpost submission remain separate from running this project. No mini-challenge eligibility is assumed.
+The [source repository](https://github.com/UditDewan/gather-kitchen) is private, verified October 21, 2026. Reviewer invitations, video upload, and Devpost submission remain separate from running this project. No mini-challenge eligibility is assumed.
 
 ## License and sources
 

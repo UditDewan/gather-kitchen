@@ -4,7 +4,7 @@ Gather is a pantry-first dinner planner. It helps someone choose a meal using th
 
 The project combines a browser interface with a local Node.js server and three real Model Context Protocol (MCP) tools. Its conversational interface is an **Alexa+ experience simulation**. It does not connect to an Alexa device, an Amazon account, or an external language model.
 
-This guide describes the implementation in this repository as of October 17, 2026. It separates working features from future possibilities and explains both the user experience and the code behind it.
+This guide describes the implementation in this repository as of October 21, 2026. It separates working features from future possibilities and explains both the user experience and the code behind it.
 
 ## Contents
 
@@ -441,7 +441,7 @@ Gather stores a JSON state object in browser `localStorage` under `gather-kitche
 
 Browser storage belongs to a specific origin. `localhost`, `127.0.0.1`, and different ports can therefore show different saved kitchens. There is no account, cloud sync, or cross-device state. Clearing browser site data removes the saved state.
 
-Saved pantry entries and preferences are checked on restoration. Invalid stored values are rejected rather than trusted as normal input. If a browser refuses a write, Gather displays a message explaining that the current tab must stay open to retain the change.
+Saved pantry entries, preferences, and shopping snapshots are checked on restoration. Shopping validation checks the ingredient records, title, recipe ID format, servings, and optional note. A malformed shopping snapshot is discarded without losing a valid pantry or preventing startup. If a browser refuses a write, Gather displays a message explaining that the current tab must stay open to retain the change.
 
 ### What leaves the browser
 
@@ -458,6 +458,8 @@ The app does not send the entire conversation to an external model, and the serv
 Planning requests copy their arguments when started and carry a version counter. Only the current plan's result can replace the UI. An older response arriving later cannot overwrite a newer preference change.
 
 Replanning clears the selected recipe and cooking state. Recipe and shopping operations also check the plan version before applying results. Reset has a separate version marker so old activity cannot repopulate the reset conversation or trace list.
+
+Recipe selection has its own version counter, so selecting two recipes quickly keeps the most recent selection even if the older response arrives last. Closing an open recipe dialog also invalidates a pending recipe selection, preventing it from reopening the dialog after dismissal. Stale recipe errors do not replace the latest selection with an error message.
 
 These checks suppress stale results. They do not cancel the underlying network requests, which can finish in the background.
 
@@ -546,11 +548,11 @@ npm test
 npm run check
 ```
 
-The recorded October 17 validation passed a clean dependency installation, **23 tests**, and JavaScript syntax checks on Windows with Node.js 24.16.
+The recorded October 21 validation passed a clean dependency installation, **26 tests**, and JavaScript syntax checks on Windows with Node.js 24.16.
 
 | Test group | Count | Main coverage |
 | --- | --- | --- |
-| Browser state | 8 | Malformed saved pantry/preferences, invalid commands, plaintext tool errors, request ordering, reset isolation, cooking focus, selected-card Cook action, shopping checkbox focus |
+| Browser state | 11 | Saved pantry/preferences/shopping validation, invalid commands, plaintext tool errors, plan and recipe request ordering, reset isolation, cooking focus, selected-card Cook action, shopping checkbox focus, closing a dialog with a pending recipe request |
 | Domain | 9 | Ranking, filters, aliases, scaling, shopping, use-soon bonuses, invalid input, parser behavior, catalog completeness |
 | Server/protocol | 6 | Initialization, official-client tool calls, malformed/oversized/cross-origin requests, asset boundaries, hostile Host headers, all six recipe image routes |
 
@@ -580,7 +582,7 @@ The current project already demonstrates the complete pantry-to-plan-to-shopping
 
 ## 15. Hackathon materials
 
-Gather was prepared for the Alexa+ simulated-experience path of the Build, Ship, Shape Amazon Developer Hackathon. The implementation demonstrates the interaction locally; it should not be described as an installed Alexa skill, certified integration, or Amazon-affiliated product.
+Gather was prepared for the Alexa+ track of the Build, Ship, Shape Amazon Developer Hackathon, using a self-hosted MCP server demonstrated through an Alexa-style browser simulation. The app and server run locally without Amazon hardware. The implementation should not be described as an installed Alexa skill, certified integration, or Amazon-affiliated product.
 
 Supporting files include:
 

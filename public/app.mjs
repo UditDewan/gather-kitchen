@@ -13,17 +13,26 @@ function validatedPreferences(value) {
   if (!Array.isArray(value.avoid) || value.avoid.length > 100 || value.avoid.some(name => typeof name !== 'string' || !name.trim() || name.length > 80)) throw new Error('Use up to 100 non-empty ingredient exclusions, each 80 characters or fewer.');
   return {maxMinutes:value.maxMinutes,servings:value.servings,diet:value.diet,avoid:value.avoid.map(name => name.trim())};
 }
+function validSavedShopping(value) {
+  const ingredient = item => item && typeof item.name === 'string' && item.name.trim() && item.name.length <= 80 && Number.isFinite(item.quantity) && item.quantity > 0 && typeof item.unit === 'string' && item.unit.trim() && item.unit.length <= 80;
+  return value && typeof value.title === 'string' && value.title.trim() && value.title.length <= 160
+    && typeof value.recipeId === 'string' && /^[a-z0-9-]{1,80}$/.test(value.recipeId)
+    && Number.isInteger(value.servings) && value.servings >= 1 && value.servings <= 12
+    && Array.isArray(value.items) && value.items.length <= 100 && value.items.every(ingredient)
+    && Array.isArray(value.available) && value.available.length <= 100 && value.available.every(ingredient)
+    && (value.note === undefined || (typeof value.note === 'string' && value.note.length <= 500));
+}
 let state = freshState();
 try {
   const saved = JSON.parse(localStorage.getItem(key));
   if (saved && Array.isArray(saved.pantry) && saved.pantry.length <= 100 && saved.pantry.every(item => item && typeof item.name === 'string' && item.name.trim() && item.name.length <= 60 && Number.isFinite(item.quantity) && item.quantity > 0 && item.quantity <= 1000 && typeof item.unit === 'string' && item.unit.trim() && item.unit.length <= 24 && Number.isInteger(item.daysLeft) && item.daysLeft >= 0 && item.daysLeft <= 365)) {
     state.pantry = saved.pantry.map(item => ({...item,name:item.name.trim(),unit:item.unit.trim()}));
     if (saved.preferences) state.preferences = validatedPreferences(saved.preferences);
-    if (saved.shopping && Array.isArray(saved.shopping.items) && Array.isArray(saved.shopping.available) && typeof saved.shopping.title === 'string') state.shopping = saved.shopping;
+    if (validSavedShopping(saved.shopping)) state.shopping = saved.shopping;
     if (Array.isArray(saved.checked)) state.checked = saved.checked.filter(item => typeof item === 'string');
   }
 } catch { /* An unreadable browser save leaves the starter pantry available. */ }
-let plans = [], selectedRecipe = null, cookingStep = null, ingredientIndex = null, initialized = null, requestId = 0, planVersion = 0, resetVersion = 0, traces = [], toastTimeout, timerInterval, timerEnd = null, timerRemaining = 0;
+let plans = [], selectedRecipe = null, cookingStep = null, ingredientIndex = null, initialized = null, requestId = 0, planVersion = 0, recipeVersion = 0, resetVersion = 0, traces = [], toastTimeout, timerInterval, timerEnd = null, timerRemaining = 0;
 
 function save() {
   try { localStorage.setItem(key, JSON.stringify(state)); }
@@ -129,9 +138,12 @@ $('#ingredient-form').addEventListener('submit',event => {
   save(); renderPantry(); $('#ingredient-dialog').close(); toast('Pantry updated. Plan dinner to use your latest ingredients.');
 });
 async function openRecipe(id) {
-  const version = planVersion;
-  try { const recipe = await callTool('gather_get_recipe',{recipeId:id,servings:state.preferences.servings}); if (version !== planVersion) return false; selectedRecipe = recipe; cookingStep = null; stopTimer(); renderRecipe(); if(!$('#recipe-dialog').open) $('#recipe-dialog').showModal(); return true; }
-  catch(error) { if (version === planVersion) toast(error.message); return false; }
+  const version = planVersion, selection = ++recipeVersion;
+  try {
+    const recipe = await callTool('gather_get_recipe',{recipeId:id,servings:state.preferences.servings});
+    if (version !== planVersion || selection !== recipeVersion) return false;
+    selectedRecipe = recipe; cookingStep = null; stopTimer(); renderRecipe(); if(!$('#recipe-dialog').open) $('#recipe-dialog').showModal(); return true;
+  } catch(error) { if (version === planVersion && selection === recipeVersion) toast(error.message); return false; }
 }
 function renderRecipe() {
   const recipe = selectedRecipe;
@@ -205,7 +217,7 @@ $('#command').addEventListener('keydown',event => { if(event.key === 'Enter' && 
 $('#add-ingredient').addEventListener('click',()=>openIngredient());
 $('#close-ingredient').addEventListener('click',()=>$('#ingredient-dialog').close());
 $('#close-recipe').addEventListener('click',()=>$('#recipe-dialog').close());
-$('#recipe-dialog').addEventListener('close',()=>{ stopTimer(); cookingStep = null; });
+$('#recipe-dialog').addEventListener('close',()=>{ recipeVersion++; stopTimer(); cookingStep = null; });
 $('#plan-from-pantry').addEventListener('click',()=>{ location.hash = 'tonight'; planDinner(true); });
 $('#reset-demo').addEventListener('click',()=>{ if(!confirm('Reset your pantry, preferences, shopping list, and conversation to the demo? This removes your saved Gather changes.')) return; resetVersion++; state = freshState(); selectedRecipe = null; plans = []; cookingStep = null; traces = []; requestId = 0; stopTimer(); $('#recipe-dialog').close(); $('#ingredient-dialog').close(); $('#conversation').innerHTML = initialConversation; $('#command').value = ''; renderTraces(); save(); preferencesToForm(); renderPantry(); renderShopping(); location.hash = 'tonight'; planDinner(); toast('Demo restored.'); });
 document.addEventListener('click',async event => {

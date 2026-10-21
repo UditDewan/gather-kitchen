@@ -1,16 +1,16 @@
 # Validation record
 
-Browser walkthrough completed on **October 16, 2026**; clean dependency installation and automated checks repeated on **October 17, 2026**, using Windows and Node.js **24.16**. These results describe the local project, not an Alexa certification, public deployment, or submitted hackathon entry.
+Browser walkthrough completed on **October 16, 2026**, with the redesigned UI checked on **October 17**. Clean dependency installation, automated checks, and a focused browser check were repeated on **October 21, 2026**, using Windows and Node.js **24.16**. These results describe the local project, not an Alexa certification, public deployment, or submitted hackathon entry.
 
 ## Automated checks
 
 | Check | Result |
 | --- | --- |
 | `npm ci` | Passed using the committed dependency lockfile |
-| `npm test` | 23 tests passed: 8 browser-state, 9 domain, 6 protocol |
+| `npm test` | 26 tests passed: 11 browser-state, 9 domain, 6 protocol |
 | `npm run check` | Passed JavaScript syntax checks |
 
-Browser-state tests cover malformed saved data, invalid commands, tool errors, overlapping requests, reset behavior, cooking-step keyboard focus, and direct cooking from the selected recipe card. They exercise browser logic with a test harness; they are separate from the interactive browser checks below.
+Browser-state tests cover malformed saved pantry/preferences/shopping data, invalid commands, tool errors, overlapping plan and recipe requests, reset behavior, cooking-step keyboard focus, direct cooking from the selected recipe card, shopping-checkbox focus, and dismissal during a pending recipe selection. They exercise browser logic with a test harness; they are separate from the interactive browser checks below.
 
 Domain tests cover recipe ranking, time/diet/exclusion filters, ingredient aliases, quantity scaling without catalog mutation, shopping-list partitions, use-soon handling, input validation, command parsing, and the six-recipe catalog.
 
@@ -49,6 +49,15 @@ The redesigned UI was inspected in the in-app browser at 1440 x 1000 and 390 x 8
 
 Export and microphone/audio were not repeated during this visual pass. Export had been exercised in the earlier walkthrough; microphone/audio remain unverified. These are local browser checks, not tests on physical mobile devices.
 
+## October 21 final checks
+
+`npm ci` completed with zero reported dependency vulnerabilities. All 26 tests and `npm run check` passed after two final reliability fixes:
+
+- Invalid saved shopping ingredient records are discarded without preventing startup or losing a valid pantry. Valid saved shopping snapshots and checked items are preserved.
+- The latest recipe selection wins when tool responses arrive out of order. Closing an open recipe dialog invalidates a pending selection; stale responses and errors cannot reopen it or replace the latest selection.
+
+The three added browser-state tests cover these cases, including both stale successes and stale errors. In the actual in-app browser, the existing eight-item pantry and 20-minute, four-serving vegetarian preferences restored correctly. The saved shopping list still showed 1 cup Greek yogurt, and its View recipe action opened Lemon chickpea bowls with the expected four-serving quantities. Cooking opened at step one, Next step moved focus to the second step and reset the timer from 04:00 to 07:00, and Close recipe dismissed the dialog. At the default 1280-pixel viewport, visible recipe images loaded, the page had no horizontal overflow, and no console errors were captured.
+
 ## Not checked or completed
 
 - Live Alexa+ service, Alexa device interaction, preview access, or certification.
@@ -62,4 +71,4 @@ The supported runtime is declared as Node 22 or later, but the checks recorded h
 
 ## Repository publication
 
-On October 17, 2026, the source was committed and pushed to [UditDewan/gather-kitchen](https://github.com/UditDewan/gather-kitchen). GitHub reported `PRIVATE` visibility, and the remote main-branch commit matched the local commit. Reviewer invitations and access have not been configured.
+On October 21, 2026, the final source and documentation were committed and pushed to [UditDewan/gather-kitchen](https://github.com/UditDewan/gather-kitchen). GitHub reported `PRIVATE` visibility, and the remote main-branch commit matched the local commit. No pending reviewer invitations were present; reviewer access remains a submission step. The source ZIP was rebuilt from that commit, excluding local dependencies and development skill caches.
